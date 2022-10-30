@@ -31,7 +31,7 @@ jobs:
   build: # make sure build/ci work properly
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: |
           npm ci
       - run: |
@@ -41,7 +41,7 @@ jobs:
   test_failSilenty_True:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Is authorised Actor?
         id: authorisedActor
@@ -79,7 +79,7 @@ jobs:
   test_failSilenty_true_with_Secret:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Is authorised Actor?
         id: authorisedActor
@@ -115,7 +115,7 @@ jobs:
   # test_failSilenty_false_with_Secret:
   #   runs-on: ubuntu-latest
   #   steps:
-  #     - uses: actions/checkout@v2
+  #     - uses: actions/checkout@v3
 
   #     - name: Is authorised Actor?
   #       id: authorisedActor
