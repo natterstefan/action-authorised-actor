@@ -26,7 +26,7 @@ jest.mock('@actions/core', () => ({
   setOutput: (name: string, value: string) => mockSetOutput(name, value)
 }))
 
-describe('action-entitled-actor', () => {
+describe('action-authorised-actor', () => {
   beforeEach(() => {
     process.env.GITHUB_WORKSPACE = 'github-workspace'
     process.env.GITHUB_ACTOR = 'someactor'
