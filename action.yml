@@ -1,0 +1,22 @@
+name: 'authorised-actor'
+description: 'Execute a GitHub Action only if the (triggering) actor is authorised to do so.'
+author: 'Stefan Natter'
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
+branding:
+  icon: 'shield'
+  color: 'green'
+inputs:
+  actor:
+    required: false
+    description: 'Provide the current actor of the workflow. By default it is the value of env.GITHUB_ACTOR'
+  authorisedActors:
+    required: true
+    description: 'Array of authorised actors, best managed as a GitHub Secret to allow only Repository owners to change the values.'
+  failSilently:
+    required: false
+    description: 'Whether or not the GitHub action should exit with status code 1 or not.'
+  failureMessage:
+    required: false
+    description: 'Message to display in the GitHub Action logs when authorised actor check fails.'

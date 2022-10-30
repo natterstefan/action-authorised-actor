@@ -1,0 +1,153 @@
+name: Test
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+      - 'releases/*'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  context:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Context
+        env:
+          ACTOR: ${{github.actor}}
+          TRIGGERING_ACTOR: ${{github.triggering_actor}}
+        run: |
+          echo GITHUB_ACTOR = "$GITHUB_ACTOR"
+          echo ACTOR = "$ACTOR"
+          echo TRIGGERING_ACTOR = "$TRIGGERING_ACTOR"
+
+  build: # make sure build/ci work properly
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          npm ci
+      - run: |
+          npm run all
+
+  # The following job will pass and output true in the last step.
+  test_failSilenty_True:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Is authorised Actor?
+        id: authorisedActor
+        uses: ./
+        env:
+          ACTIONS_STEP_DEBUG: true
+        with:
+          authorisedActors: |
+            [
+              "octocat",
+              "natterstefan",
+              "nektos/act"
+            ]
+
+      - name: Log Result
+        env:
+          # If you have chosen to not fail (`failSilently = true`) use the
+          # output of the workflow to decide what to do next when the actor is
+          # or is not authorised for what the actor wanted to do.
+          IS_AUTHORISED_ACTOR: ${{steps.authorisedActor.outputs.isAuthorisedActor}}
+        run: |
+          echo "action-authorised-actor outputs:"
+          echo "$IS_AUTHORISED_ACTOR"
+
+      - name: Exit If False
+        # this condition is false, which means the step will pass
+        if: ${{ steps.authorisedActor.outputs.isAuthorisedActor == 'false' }}
+        run: exit 1
+
+      - name: Log if True
+        # this condition is false, which means the step will pass
+        if: ${{ steps.authorisedActor.outputs.isAuthorisedActor == 'true' }}
+        run: echo "It works!"
+
+  test_failSilenty_true_with_Secret:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Is authorised Actor?
+        id: authorisedActor
+        uses: ./
+        env:
+          ACTIONS_STEP_DEBUG: true
+        with:
+          authorisedActors: ${{secrets.authorisedActor}}
+
+      - name: Log Result
+        env:
+          # If you have chosen to not fail (`failSilently = true`) use the
+          # output of the workflow to decide what to do next when the actor is
+          # or is not authorised for what the actor wanted to do.
+          IS_AUTHORISED_ACTOR: ${{steps.authorisedActor.outputs.isAuthorisedActor}}
+        run: |
+          echo "action-authorised-actor outputs:"
+          echo "$IS_AUTHORISED_ACTOR"
+
+      - name: Exit If False
+        # this condition is false, which means the step will pass
+        if: ${{ steps.authorisedActor.outputs.isAuthorisedActor == 'false' }}
+        run: exit 1
+
+      - name: Log if True
+        # this condition is false, which means the step will pass
+        if: ${{ steps.authorisedActor.outputs.isAuthorisedActor == 'true' }}
+        run: echo "It works!"
+
+  # The following job will fail but still output "Failure" and "Always" as the
+  # steps run on failure (see `if: failure()` condition) and always.
+  # NOTE: uncomment to see it in action
+  # test_failSilenty_false_with_Secret:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+
+  #     - name: Is authorised Actor?
+  #       id: authorisedActor
+  #       uses: ./
+  #       with:
+  #         failSilently: false
+  #         authorisedActors: |
+  #           [
+  #             "octocat"
+  #           ]
+
+  #     - name: Test
+  #       # runs when the workflow step failed (exitcode = 1)
+  #       if: failure()
+  #       env:
+  #         IS_AUTHORISED_ACTOR: ${{steps.authorisedActor.outputs.isAuthorisedActor}}
+  #       run: |
+  #         echo "action-authorised-actor outputs:"
+  #         echo "$IS_AUTHORISED_ACTOR"
+
+  #     - name: Test-Success
+  #       # will not log, because the step did not succeed
+  #       if: success()
+  #       run: |
+  #         echo "Sucess Case"
+
+  #     - name: Test-Failure
+  #       if: failure()
+  #       run: |
+  #         echo "Failure"
+
+  #     - name: Test-Always
+  #       if: always()
+  #       run: |
+  #         echo "Always"
