@@ -80,7 +80,7 @@ npm run package
 
 # in another terminal window run
 act -j test_failSilenty_True
-act -s authorisedActor="[nektos/act]" -j test_failSilenty_true_with_Secret
+act -s authorisedActors="[nektos/act]" -j test_failSilenty_true_with_Secret
 
 # Uncomment test case first, as this one will exit with 1 (=failure)
 act -j testFailSilentyFalse

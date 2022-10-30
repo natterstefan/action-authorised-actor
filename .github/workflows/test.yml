@@ -87,7 +87,7 @@ jobs:
         env:
           ACTIONS_STEP_DEBUG: true
         with:
-          authorisedActors: ${{secrets.authorisedActor}}
+          authorisedActors: ${{secrets.authorisedActors}}
 
       - name: Log Result
         env:
