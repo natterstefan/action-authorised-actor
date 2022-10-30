@@ -88,7 +88,7 @@ act -j testFailSilentyFalse
 
 ## Alternatives
 
-- [natterstefan/action-eligible-actor](https://github.com/natterstefan/action-eligible-actor): configure which actor is eligible to run workflow with ease with a `eligible-actors-rules.json` configuration file
+- [natterstefan/action-eligible-actor](https://github.com/natterstefan/action-eligible-actor): configure which actor is eligible to run a workflow with ease with a `eligible-actors-rules.json` configuration file
 - [actions-cool/check-user-permission: 👮 A GitHub Action to check user permission of the current repository.](https://github.com/actions-cool/check-user-permission)
 - [im-open/is-actor-authorized: Action that determines if the actor who initiated the workflow is authorized to do so.](https://github.com/im-open/is-actor-authorized)
 
